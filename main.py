@@ -12,11 +12,12 @@ class EngineInput(BaseModel):
 def root():
     return {"status": "Evercrafted Engine Running"}
 
-def build_variant(vibe, formula, palette, score, suffix):
+def build_option(vibe, formula, palette, density, score):
     return {
-        "title": f"{vibe.title()} Wreath {suffix}",
+        "title": f"{vibe.title()} Wreath",
         "formula": formula,
         "palette": palette,
+        "density": density,
         "score": score
     }
 
@@ -24,39 +25,43 @@ def build_variant(vibe, formula, palette, score, suffix):
 def run_engine(data: EngineInput):
     feeling = data.input_data.get("feeling", "").lower()
 
+    # Base emotion mapping
     if "calm" in feeling or "peaceful" in feeling:
-        base = {
-            "vibe": "serene and airy",
-            "formula": "open_arc",
-            "palette": ["soft green", "muted white", "sage"]
-        }
+        base_palette = ["soft green", "muted white", "sage"]
     elif "romantic" in feeling or "love" in feeling:
-        base = {
-            "vibe": "soft and intimate",
-            "formula": "crescent",
-            "palette": ["blush", "rose", "cream"]
-        }
+        base_palette = ["blush", "rose", "cream"]
     elif "bold" in feeling or "dramatic" in feeling:
-        base = {
-            "vibe": "strong and sculptural",
-            "formula": "radial_burst",
-            "palette": ["black", "deep red", "gold"]
-        }
+        base_palette = ["black", "deep red", "gold"]
     else:
-        base = {
-            "vibe": "natural and balanced",
-            "formula": "organic",
-            "palette": ["neutral beige", "greenery"]
-        }
+        base_palette = ["neutral beige", "greenery"]
 
-    outputs = [
-        build_variant(base["vibe"], base["formula"], base["palette"], 0.83, "A"),
-        build_variant(base["vibe"], base["formula"], base["palette"], 0.86, "B"),
-        build_variant(base["vibe"], base["formula"], base["palette"], 0.88, "C"),
-    ]
+    # Three distinct design directions
+    option_1 = build_option(
+        "light and minimal",
+        "open_arc",
+        base_palette,
+        "low",
+        0.82
+    )
+
+    option_2 = build_option(
+        "balanced and classic",
+        "crescent",
+        base_palette,
+        "medium",
+        0.86
+    )
+
+    option_3 = build_option(
+        "full and dramatic",
+        "radial_burst",
+        base_palette,
+        "high",
+        0.89
+    )
 
     return {
-        "message": "Engine generated multiple designs",
+        "message": "Engine generated distinct design options",
         "input": feeling,
-        "outputs": outputs
+        "outputs": [option_1, option_2, option_3]
     }
